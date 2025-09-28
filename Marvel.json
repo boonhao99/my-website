@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Iron Man",
+    "aliases": ["Tony Stark"],
+    "faction": "Avengers",
+    "short": "A genius billionaire inventor who fights crime in a high-tech suit.",
+    "tags": ["Tech", "Leader"],
+    "img": "images/ironman.svg"
+  },
+  {
+    "id": 2,
+    "name": "Captain America",
+    "aliases": ["Steve Rogers"],
+    "faction": "Avengers",
+    "short": "The first Avenger, enhanced by the super-soldier serum.",
+    "tags": ["Leader", "Soldier"],
+    "img": "images/captainamerica.svg"
+  },
+  {
+    "id": 3,
+    "name": "Thor",
+    "aliases": ["God of Thunder"],
+    "faction": "Avengers",
+    "short": "Asgardian god wielding the mighty hammer Mjölnir.",
+    "tags": ["God", "Avengers"],
+    "img": "images/thor.svg"
+  }
+  // ... 继续到 100 个示例角色
+]

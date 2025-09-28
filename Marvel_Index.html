@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Marvel Universe Characters</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #161b22;
+      padding: 1rem;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      color: #e62429;
+    }
+    #searchBar {
+      width: 80%;
+      max-width: 400px;
+      padding: 0.5rem;
+      margin-top: 1rem;
+      border-radius: 5px;
+      border: none;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .card {
+      background: #161b22;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: scale(1.05);
+    }
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .card h3 {
+      margin: 0.5rem;
+      color: #58a6ff;
+    }
+    #loadMore {
+      display: block;
+      margin: 1rem auto;
+      padding: 0.7rem 1.5rem;
+      background: #e62429;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    /* Modal */
+    #modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    #modalContent {
+      background: #161b22;
+      padding: 1.5rem;
+      border-radius: 10px;
+      max-width: 600px;
+      color: #c9d1d9;
+    }
+    #closeModal {
+      float: right;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #e62429;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Marvel Universe Characters</h1>
+    <input type="text" id="searchBar" placeholder="Search characters...">
+  </header>
+  <div class="container" id="characterContainer"></div>
+  <button id="loadMore">Load More</button>
+
+  <!-- Modal -->
+  <div id="modal">
+    <div id="modalContent">
+      <span id="closeModal">&times;</span>
+      <h2 id="modalName"></h2>
+      <img id="modalImg" src="" style="width:100%; max-height:300px; object-fit:cover;">
+      <p id="modalDesc"></p>
+    </div>
+  </div>
+
+  <script>
+    let characters = [];
+    let currentIndex = 0;
+    const pageSize = 12;
+
+    async function loadCharacters() {
+      const res = await fetch("characters.json");
+      characters = await res.json();
+      renderCharacters();
+    }
+
+    function renderCharacters(reset=false) {
+      const container = document.getElementById("characterContainer");
+      if (reset) container.innerHTML = "";
+      const slice = characters.slice(currentIndex, currentIndex + pageSize);
+      slice.forEach(ch => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${ch.img}" alt="${ch.name}">
+          <h3>${ch.name}</h3>
+        `;
+        card.onclick = () => openModal(ch);
+        container.appendChild(card);
+      });
+      currentIndex += pageSize;
+      if (currentIndex >= characters.length) {
+        document.getElementById("loadMore").style.display = "none";
+      }
+    }
+
+    function openModal(ch) {
+      document.getElementById("modalName").textContent = ch.name;
+      document.getElementById("modalImg").src = ch.img;
+      document.getElementById("modalDesc").textContent = ch.short;
+      document.getElementById("modal").style.display = "flex";
+    }
+
+    document.getElementById("closeModal").onclick = () => {
+      document.getElementById("modal").style.display = "none";
+    };
+
+    document.getElementById("loadMore").onclick = () => renderCharacters();
+
+    document.getElementById("searchBar").addEventListener("input", e => {
+      const term = e.target.value.toLowerCase();
+      const filtered = characters.filter(ch => ch.name.toLowerCase().includes(term));
+      currentIndex = 0;
+      characters = filtered;
+      renderCharacters(true);
+    });
+
+    loadCharacters();
+  </script>
+</body>
+</html>
